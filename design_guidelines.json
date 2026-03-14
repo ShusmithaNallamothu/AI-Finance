@@ -1,0 +1,165 @@
+{
+  "app_name": "Bloom",
+  "design_philosophy": {
+    "theme": "Cozy Growth",
+    "core_values": ["Approachable", "Warm", "Encouraging", "Transparent"],
+    "mood": "Like a friendly coffee chat, not a bank meeting.",
+    "target_audience": "Gen Z & Young Millennials (21-30), First-time investors"
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Nunito, sans-serif",
+      "body": "Manrope, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-4xl md:text-6xl font-extrabold tracking-tight",
+      "h2": "text-3xl md:text-5xl font-bold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-bold",
+      "h4": "text-xl md:text-2xl font-semibold",
+      "body-lg": "text-lg md:text-xl font-medium leading-relaxed",
+      "body": "text-base font-normal leading-relaxed",
+      "caption": "text-sm font-medium text-muted-foreground"
+    },
+    "rules": [
+      "Headings must use Nunito (Rounded) to feel friendly.",
+      "Body text must use Manrope for legibility.",
+      "Never use uppercase for headings unless for tiny labels (tracking-widest).",
+      "Use 'text-balance' on headings for better line wrapping."
+    ]
+  },
+  "colors": {
+    "palette": {
+      "background": "#FFFBF5",
+      "foreground": "#1F2937",
+      "card": "#FFFFFF",
+      "card_foreground": "#1F2937",
+      "primary": "#FF8BA7",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#A78BFA",
+      "secondary_foreground": "#FFFFFF",
+      "muted": "#F3F4F6",
+      "muted_foreground": "#6B7280",
+      "accent": "#FDE68A",
+      "accent_foreground": "#1F2937",
+      "destructive": "#F87171",
+      "border": "#E5E7EB",
+      "input": "#F9FAFB",
+      "ring": "#FF8BA7"
+    },
+    "usage": {
+      "primary": "Main CTA buttons, active states, key highlights.",
+      "secondary": "Secondary actions, mentor bubbles, decorative elements.",
+      "accent": "Success states, growth indicators, 'surplus' metrics.",
+      "background": "Global page background (Warm Cream).",
+      "card": "Surface for content containers."
+    },
+    "gradients": {
+      "hero": "bg-gradient-to-br from-rose-100 via-purple-100 to-orange-50",
+      "button": "bg-gradient-to-r from-rose-400 to-orange-400 hover:from-rose-500 hover:to-orange-500",
+      "text": "bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-purple-600"
+    }
+  },
+  "visual_enhancers": {
+    "radius": {
+      "default": "rounded-2xl",
+      "card": "rounded-3xl",
+      "button": "rounded-full",
+      "input": "rounded-xl"
+    },
+    "shadows": {
+      "soft": "shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+      "card": "shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)]",
+      "float": "shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)]",
+      "colored": "shadow-[0_10px_40px_-10px_rgba(255,139,167,0.3)]"
+    },
+    "glassmorphism": {
+      "default": "bg-white/70 backdrop-blur-lg border border-white/40 shadow-sm",
+      "heavy": "bg-white/40 backdrop-blur-xl border border-white/30"
+    },
+    "borders": {
+      "default": "border border-stone-100",
+      "interactive": "border-2 border-transparent hover:border-rose-200"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "page_padding": "p-4 md:p-8 lg:p-12",
+      "section_gap": "gap-8 md:gap-16",
+      "card_padding": "p-6 md:p-8"
+    },
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "masonry": "columns-1 md:columns-3 gap-6 space-y-6"
+    },
+    "containers": {
+      "max_width": "max-w-7xl mx-auto"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-full px-8 py-3 bg-primary text-primary-foreground font-bold shadow-colored hover:scale-105 transition-all duration-300",
+      "secondary": "rounded-full px-6 py-3 bg-white text-foreground border-2 border-stone-100 hover:border-primary/20 hover:bg-stone-50 transition-all"
+    },
+    "cards": {
+      "base": "bg-card rounded-3xl p-6 shadow-soft hover:shadow-card transition-shadow duration-300 border border-stone-100",
+      "interactive": "cursor-pointer hover:-translate-y-1 transition-transform duration-300"
+    },
+    "inputs": {
+      "base": "rounded-xl border-stone-200 bg-stone-50 px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
+      "label": "text-sm font-bold text-stone-600 mb-2 block ml-1"
+    },
+    "charts": {
+      "style": "Use rounded bars (radius=[4,4,0,0]). Use gradients for area charts. No grid lines (or very subtle).",
+      "colors": ["#FF8BA7", "#A78BFA", "#FDE68A", "#34D399"]
+    }
+  },
+  "media": {
+    "icons": "Lucide React (rounded style)",
+    "illustrations": {
+      "style": "3D Cute/Abstract or Soft Flat",
+      "usage": "Use 3D elements for Hero and Empty States. Use Icons for navigation."
+    },
+    "image_urls": {
+      "mentor_avatar": "https://images.unsplash.com/photo-1744451658473-cf5c564d5a37?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwzfHxjdXRlJTIwM2QlMjByb2JvdCUyMGNoYXJhY3RlciUyMGZyaWVuZGx5JTIwZmFjZSUyMG1pbmltYWx8ZW58MHx8fHwxNzczMjI1MTQ1fDA&ixlib=rb-4.1.0&q=85",
+      "hero_background_shape": "https://images.unsplash.com/photo-1762652345565-e38e420b6f30?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwxfHwzZCUyMHBhc3RlbCUyMGFic3RyYWN0JTIwc2hhcGVzJTIwc29mdCUyMGxpZ2h0aW5nfGVufDB8fHx8MTc3MzIyNTEyNHww&ixlib=rb-4.1.0&q=85",
+      "landing_student": "https://images.unsplash.com/photo-1648747640271-e0270e2dac1c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxoYXBweSUyMHlvdW5nJTIwc3R1ZGVudCUyMHVzaW5nJTIwbGFwdG9wJTIwZGl2ZXJzZXxlbnwwfHx8fDE3NzMyMjUxMjV8MA&ixlib=rb-4.1.0&q=85",
+      "growth_concept": "https://images.unsplash.com/photo-1706466615511-18622e5ef756?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNzl8MHwxfHNlYXJjaHwzfHwzZCUyMHBhc3RlbCUyMGFic3RyYWN0JTIwc2hhcGVzJTIwc29mdCUyMGxpZ2h0aW5nfGVufDB8fHx8MTc3MzIyNTEyNHww&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "animation": {
+    "library": "framer-motion (Recommended) or tailwindcss-animate",
+    "preferences": {
+      "page_transition": "initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}",
+      "hover_lift": "whileHover={{ y: -5 }}",
+      "button_tap": "whileTap={{ scale: 0.95 }}",
+      "stagger": "staggerChildren: 0.1"
+    }
+  },
+  "accessibility": {
+    "contrast": "Ensure text-gray-600+ is used on light backgrounds for readability.",
+    "focus": "Custom focus ring: ring-2 ring-primary ring-offset-2",
+    "labels": "All inputs must have visible labels or aria-labels."
+  },
+  "instructions_to_main_agent": [
+    "INSTALL: framer-motion (yarn add framer-motion) for smooth animations.",
+    "INSTALL: @fontsource/nunito and @fontsource/manrope",
+    "SETUP: Update tailwind.config.js with the custom colors and border-radius defined in 'colors' and 'visual_enhancers'.",
+    "SETUP: Add the fonts to index.css or App.js.",
+    "DESIGN: Use the 'mentor_avatar' image for the AI Chat interface.",
+    "DESIGN: Create a 'Welcome' step in the quiz that feels like a conversation, not a form.",
+    "DESIGN: The Compounding Chart should look 'delicious' - soft gradients, thick strokes.",
+    "CRITICAL: Do not use dark mode by default. Force Light Mode or make it the primary theme.",
+    "CRITICAL: All interactive elements must have data-testid attributes."
+  ],
+  "UNIVERSAL_GUIDELINES": [
+    "Avoid 'AI slop' aesthetic (generic centered layouts, default blue).",
+    "Use 2-3x more spacing than typical designs.",
+    "Every interaction needs micro-animations.",
+    "Use glass-morphism effects with backdrop filters.",
+    "NEVER use generic AI assistant emojis. Use the provided 3D avatar.",
+    "Prioritize using pre-existing components from src/components/ui.",
+    "Components MUST use named exports.",
+    "Pages MUST use default exports."
+  ]
+}
