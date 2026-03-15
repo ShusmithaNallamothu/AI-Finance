@@ -15,12 +15,14 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Any, cast
 import uuid
 from datetime import datetime, timezone
-from jose import jwt, JWTError
+import jwt
 from openai import AsyncOpenAI
 from passlib.context import CryptContext
 
+print("Vercel Python boot: Initializing Server...")
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+if (ROOT_DIR / '.env').exists():
+    load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection (Lazy initialization)
 client = None
@@ -115,7 +117,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     try:
         payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         return payload
-    except JWTError:
+    except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # ─── Auth Routes ──────────────────────────────────────────
