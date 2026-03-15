@@ -50,6 +50,28 @@ The frontend is a React app. It needs to know where the backend is running.
 
 ---
 
+## ☁️ Vercel Deployment
+
+This project is pre-configured for Vercel. Because it is a monorepo, you should deploy the **Frontend** and **Backend** as two separate projects in the Vercel Dashboard.
+
+### 1. Backend Deployment
+- **Root Directory**: `backend`
+- **Framework Preset**: `Other` (Vercel will detect `vercel.json`).
+- **Environment Variables**:
+  - `MONGO_URL`: Your MongoDB Atlas string.
+  - `DB_NAME`: `bloom_db`
+  - `OPENAI_API_KEY`: Your OpenAI key.
+  - `JWT_SECRET`: Random string.
+  - `CORS_ORIGINS`: Your Vercel frontend URL (or `*`).
+
+### 2. Frontend Deployment
+- **Root Directory**: `frontend`
+- **Framework Preset**: `Create React App`
+- **Environment Variables**:
+  - `REACT_APP_BACKEND_URL`: Your Vercel Backend URL (from Step 1).
+
+---
+
 ## Troubleshooting
 
 - **Socket Access Permission Error (WinError 10013)**: If starting the backend throws a socket error, it means the requested port (usually 8000) is blocked by another service or Windows reserved ports. Try changing the port to 8001 or 8080 as shown in the launch commands above.
