@@ -15,9 +15,9 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Any, cast
 import uuid
 from datetime import datetime, timezone
-import bcrypt
 from jose import jwt, JWTError
 from openai import AsyncOpenAI
+from passlib.context import CryptContext
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -34,11 +34,16 @@ JWT_ALGORITHM = "HS256"
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 # Password hashing helpers
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 def hash_password(plain: str) -> str:
-    return bcrypt.hashpw(plain.encode(), bcrypt.gensalt()).decode()
+    return pwd_context.hash(plain)
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(plain.encode(), hashed.encode())
+    try:
+        return pwd_context.verify(plain, hashed)
+    except Exception:
+        return False
 security = HTTPBearer()
 
 @asynccontextmanager
