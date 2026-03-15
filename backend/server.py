@@ -22,11 +22,18 @@ from passlib.context import CryptContext
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-client = AsyncIOMotorClient(mongo_url)
-db_name = os.environ.get('DB_NAME', 'bloom_db')
-db = client[db_name]
+# MongoDB connection (Lazy initialization)
+client = None
+db = None
+
+def get_db():
+    global client, db
+    if db is None:
+        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+        db_name = os.environ.get('DB_NAME', 'bloom_db')
+        client = AsyncIOMotorClient(mongo_url)
+        db = client[db_name]
+    return db
 
 # Config
 JWT_SECRET = os.environ.get('JWT_SECRET', 'your-super-secret-key')
@@ -49,14 +56,16 @@ security = HTTPBearer()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    await db.users.create_index("email", unique=True)
-    await db.users.create_index("id", unique=True)
-    await db.quiz_responses.create_index("user_id", unique=True)
-    await db.chat_messages.create_index("user_id")
+    database = get_db()
+    await database.users.create_index("email", unique=True)
+    await database.users.create_index("id", unique=True)
+    await database.quiz_responses.create_index("user_id", unique=True)
+    await database.chat_messages.create_index("user_id")
     logger.info("Bloom Financial Mentor API started")
     yield
     # Shutdown
-    client.close()
+    if client:
+        client.close()
     logger.info("Bloom Financial Mentor API shut down")
 
 app = FastAPI(lifespan=lifespan)
@@ -113,7 +122,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 @api_router.post("/auth/register")
 async def register(data: UserRegister):
-    existing = await db.users.find_one({"email": data.email})
+    existing = await get_db().users.find_one({"email": data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     user_id = str(uuid.uuid4())
@@ -125,13 +134,13 @@ async def register(data: UserRegister):
         "created_at": datetime.now(timezone.utc).isoformat(),
         "quiz_completed": False
     }
-    await db.users.insert_one(user_doc)
+    await get_db().users.insert_one(user_doc)
     token = create_token(user_id, data.email, data.name)
     return {"token": token, "user": {"id": user_id, "name": data.name, "email": data.email, "quiz_completed": False}}
 
 @api_router.post("/auth/login")
 async def login(data: UserLogin):
-    user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    user = await get_db().users.find_one({"email": data.email}, {"_id": 0})
     if not user or not verify_password(data.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_token(user["id"], user["email"], user["name"])
@@ -141,10 +150,10 @@ async def login(data: UserLogin):
 
 @api_router.get("/user/profile")
 async def get_profile(user=Depends(get_current_user)):
-    user_doc = await db.users.find_one({"id": user["user_id"]}, {"_id": 0, "password_hash": 0})
+    user_doc = await get_db().users.find_one({"id": user["user_id"]}, {"_id": 0, "password_hash": 0})
     if not user_doc:
         raise HTTPException(status_code=404, detail="User not found")
-    quiz = await db.quiz_responses.find_one({"user_id": user["user_id"]}, {"_id": 0})
+    quiz = await get_db().quiz_responses.find_one({"user_id": user["user_id"]}, {"_id": 0})
     return {"user": user_doc, "quiz": quiz}
 
 @api_router.post("/quiz/save")
@@ -158,19 +167,19 @@ async def save_quiz(data: QuizData, user=Depends(get_current_user)):
         "risk_comfort": data.risk_comfort,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
-    await db.quiz_responses.update_one(
+    await get_db().quiz_responses.update_one(
         {"user_id": user["user_id"]}, {"$set": quiz_doc}, upsert=True
     )
-    await db.users.update_one(
+    await get_db().users.update_one(
         {"id": user["user_id"]}, {"$set": {"quiz_completed": True}}
     )
     return {"status": "saved", "quiz": quiz_doc}
 
 @api_router.post("/quiz/reset")
 async def reset_quiz(user=Depends(get_current_user)):
-    await db.quiz_responses.delete_one({"user_id": user["user_id"]})
-    await db.chat_messages.delete_many({"user_id": user["user_id"]})
-    await db.users.update_one(
+    await get_db().quiz_responses.delete_one({"user_id": user["user_id"]})
+    await get_db().chat_messages.delete_many({"user_id": user["user_id"]})
+    await get_db().users.update_one(
         {"id": user["user_id"]}, {"$set": {"quiz_completed": False}}
     )
     return {"status": "reset"}
@@ -207,8 +216,8 @@ async def send_chat(data: ChatMessage, user=Depends(get_current_user)):
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OpenAI API key not configured")
 
-    quiz = await db.quiz_responses.find_one({"user_id": user["user_id"]}, {"_id": 0})
-    prev_messages_raw = await db["chat_messages"].find(
+    quiz = await get_db().quiz_responses.find_one({"user_id": user["user_id"]}, {"_id": 0})
+    prev_messages_raw = await get_db()["chat_messages"].find(
         {"user_id": user["user_id"]}, {"_id": 0}
     ).sort("created_at", 1).to_list(50)
     prev_messages: List[Any] = list(prev_messages_raw) if prev_messages_raw else []
@@ -271,19 +280,19 @@ User Financial Profile:
         "content": response,
         "created_at": now
     }
-    await db["chat_messages"].insert_many([user_msg_doc, assistant_msg_doc])
+    await get_db()["chat_messages"].insert_many([user_msg_doc, assistant_msg_doc])
     return {"response": response, "message_id": assistant_msg_doc["id"]}
 
 @api_router.get("/chat/history")
 async def get_chat_history(user=Depends(get_current_user)):
-    messages = await db["chat_messages"].find(
+    messages = await get_db()["chat_messages"].find(
         {"user_id": user["user_id"]}, {"_id": 0}
     ).sort("created_at", 1).to_list(100)
     return {"messages": messages}
 
 @api_router.delete("/chat/clear")
 async def clear_chat(user=Depends(get_current_user)):
-    await db["chat_messages"].delete_many({"user_id": user["user_id"]})
+    await get_db()["chat_messages"].delete_many({"user_id": user["user_id"]})
     return {"status": "cleared"}
 
 # ─── Compounding Calculation ─────────────────────────────
